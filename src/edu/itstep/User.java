@@ -1,5 +1,13 @@
 package edu.itstep;
 
+/*
+ * 1. Cтворити клас User з інформацією про користувача:
+ * повне ім`я,
+ * вік,
+ * стать,
+ * електронна пошта,
+ * країна проживання
+ */
 public class User {
     private String fullName;
     private int age;
