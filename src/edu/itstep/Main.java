@@ -1,6 +1,7 @@
 package edu.itstep;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,37 +40,70 @@ public class Main {
         }
 
         // - Отримати середній вік всіх
-        System.out.println("\nСередній вік Users & Employees: " + averageAge(arrayList) + " років;");
+        System.out.println("\nСередній вік Users & Employees: " + averageAge(arrayList, false) + " років;");
 
         // - Отримати середній вік серед неповнолітніх
-//        arrayList.removeIf(s -> s.getAge() >= 18);
-//        System.out.println("Середній вік серед неповнолітніх: " + averageAge(arrayList) + " років;");
+        System.out.println("Середній вік серед неповнолітніх: " + averageAge(arrayList, true) + " років;");
 
         // - Отримати середній оклад на відділ
-        // TODO ...........
+        String[] departments = new String[]{"IT", "HR", "UI"};
 
+        System.out.println("Середній оклад на відділ: "
+                + departments[0] + " - " + averageSalary(arrayList, departments[0]) + "$ \t"
+                + departments[1] + " - " + averageSalary(arrayList, departments[1]) + "$ \t"
+                + departments[2] + " - " + averageSalary(arrayList, departments[2]) + "$ \t"
+        );
 
         // - Отримати користувачів у яких пошта "gmail.com";
-//        System.out.println("\nКористувачі з поштою \"gmail.com\": ");
-//        arrayList.stream().filter(p -> p.getEmail().contains("gmail.com"))
-//                .forEach(p -> System.out.println(p.getFullName() + " - " + p.getEmail()));
+        System.out.println("\nКористувачі з поштою \"gmail.com\": ");
+        arrayList.stream().filter(p -> p.getEmail().contains("gmail.com"))
+                .forEach(p -> System.out.println(p.getFullName() + " - " + p.getEmail()));
 
         // - Отримати електронні скриньки всіх повнолітніх жінок, не старших 30ти, які проживають в Україні та працюють
         System.out.println("\nЕлектронні скриньки працюючих жінок не старших 30ти: ");
         arrayList.stream().filter(p -> p.getAge() >= 18 && p.getAge() <= 30)
                 .filter(p -> p.getResidenceCountry().contains("UA"))
-            .filter(p -> p instanceof Employee)
-        .forEach(p -> System.out.println(p.getEmail()));
+                .filter(p -> p instanceof Employee)
+                .forEach(p -> System.out.println(p.getEmail()));
     }
 
-    private static int averageAge(ArrayList<User> arrayList) {
+    private static int averageAge(ArrayList<User> arrayList, boolean minors) {
         int avg = 0;
 
-        for (int i = 0; i < arrayList.size(); i++) {
-            avg += arrayList.get(i).getAge();
+        if (minors) {
+            ArrayList<User> temp = (ArrayList<User>) arrayList.clone();
+            temp.removeIf(s -> s.getAge() >= 18);
+
+            for (int i = 0; i < temp.size(); i++) {
+                avg += temp.get(i).getAge();
+            }
+
+            avg /= temp.size();
+        } else {
+            for (int i = 0; i < arrayList.size(); i++) {
+                avg += arrayList.get(i).getAge();
+            }
+
+            avg /= arrayList.size();
+        }
+        return avg;
+    }
+
+    private static int averageSalary(ArrayList<User> arrayList, String department) {
+        int avg = 0;
+        int size = 0;
+
+        for (int i = 0; i < arrayList.size(); ++i) {
+            if (arrayList.get(i) instanceof Employee) {
+                Employee temp = (Employee) arrayList.get(i);
+                if (temp.getDepartment().contains(department)) {
+                    avg += temp.getSalary();
+                    ++size;
+                }
+            }
         }
 
-        avg /= arrayList.size();
+        avg /= size;
         return avg;
     }
 }
